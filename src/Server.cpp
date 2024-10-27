@@ -5,20 +5,26 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
 	if (pattern.length() == 1) {
         return input_line.find(pattern) != std::string::npos;
     }else if(pattern=="\\d"){
-    	char digit_class='\0';
     	for(const auto& a: input_line){
-    		if ('0' <= a && a <= '9'){
-    			digit_class=a;
-    		}
-    	}
-    	return digit_class;
-    }else if(pattern=="\\w"){
-    	for(const auto &l:input_line){
-    		if(isdigit(l) ||isalpha(l)){
+    		if (isdigit(a)){
     			return true;
     		}
     	}
     	return false;
+    }else if(pattern=="\\w"){
+    	for(const auto &a:input_line){
+    		if(isdigit(a) ||isalpha(a)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }else if (pattern.at(0) == '[' && pattern.at(pattern.length() - 1) == ']') {
+        for (const auto &l : pattern.substr(1, pattern.length() - 2)) {
+            if (input_line.find(l) != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
     }
     else {
         throw std::runtime_error("Unhandled pattern " + pattern);
