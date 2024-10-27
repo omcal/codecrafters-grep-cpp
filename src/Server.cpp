@@ -2,13 +2,24 @@
 #include <string>
 
 bool match_pattern(const std::string& input_line, const std::string& pattern) {
-    if (pattern.length() == 1) {
+    if(pattern=="\\d"){
+    	char digit_class='\0';
+    	for(auto& a: input_line){
+    		if ('0' <= a && a <= '9'){
+    			digit_class=a;
+    		}
+    	}
+    	return digit_class;
+    }
+
+	if (pattern.length() == 1) {
         return input_line.find(pattern) != std::string::npos;
     }
     else {
         throw std::runtime_error("Unhandled pattern " + pattern);
     }
 }
+
 
 
 int main(int argc, char* argv[]) {
