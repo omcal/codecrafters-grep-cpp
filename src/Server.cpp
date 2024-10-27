@@ -18,13 +18,20 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
     		}
     	}
     	return false;
-    }else if (pattern.at(0) == '[' && pattern.at(pattern.length() - 1) == ']') {
+    }else if (pattern.at(0) == '[' && pattern.at(pattern.length() - 1) == ']' && pattern.at(1)!='^') {
         for (const auto &l : pattern.substr(1, pattern.length() - 2)) {
             if (input_line.find(l) != std::string::npos) {
                 return true;
             }
         }
         return false;
+    }else if (pattern.at(0) == '[' && pattern.at(pattern.length() - 1) == ']' && pattern.at(1)=='^') {
+        for (const auto &l : pattern.substr(1, pattern.length() - 2)) {
+            if (input_line.find(l) != std::string::npos) {
+                return false;
+            }
+        }
+        return true;
     }
     else {
         throw std::runtime_error("Unhandled pattern " + pattern);
