@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 
+bool match_pattern_recursize(std::string input_line, std::string pattern);
+
+
+
 bool match_pattern(const std::string& input_line, const std::string& pattern) {
 	if (pattern.length() == 1) {
         return input_line.find(pattern) != std::string::npos;
@@ -32,10 +36,20 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
             }
         }
         return true;
-    }
-    else {
-        throw std::runtime_error("Unhandled pattern " + pattern);
-    }
+    }else if (pattern.length() > 2 && pattern[0] == '\\') {
+
+	        int i = 0;
+
+	        do {
+
+	            if (match_pattern_recursize(input_line.substr(i, input_line.length()-1), pattern)) return true;
+
+	            i++;
+
+	        } while (i < input_line.length());
+
+	    }
+	    return false;
 }
 
 
@@ -78,3 +92,37 @@ int main(int argc, char* argv[]) {
          return 1;
      }
 }
+
+bool match_pattern_recursize(std::string input_line, std::string pattern) {
+    if (pattern.empty())
+    	return true;
+    if (pattern[0] == ' ') {
+        if (input_line[0] == ' ') {
+            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(1, pattern.length()-1));
+        }
+        return false;
+    }
+
+    if (pattern[0] == '\\' && pattern[1] == 'd') {
+        if (isdigit(input_line[0])) {
+            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(2, pattern.length()-1));
+        }
+        return false;
+    }
+
+    if (pattern[0] == '\\' && pattern[1] == 'w') {
+
+        if (isalnum(input_line[0])) {
+
+            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(2, pattern.length()-1));
+        }
+        return false;
+    }
+    else {
+        return input_line.find(pattern) != std::string::npos;
+
+    }
+
+    return false;
+}
+
