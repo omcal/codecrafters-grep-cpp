@@ -40,15 +40,22 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
 
 	        int i = 0;
 
-	        do {
+
+
+	        while (i < input_line.length()) {
 
 	            if (match_pattern_recursize(input_line.substr(i, input_line.length()-1), pattern)) return true;
 
 	            i++;
 
-	        } while (i < input_line.length());
+	        }
 
 	    }
+    if (pattern.length() > 1 && pattern[0] == '^') {
+
+        return match_pattern_recursize(input_line, pattern.substr(1, pattern.length()-1));
+
+    }
 	    return false;
 }
 
@@ -119,8 +126,11 @@ bool match_pattern_recursize(std::string input_line, std::string pattern) {
         return false;
     }
     else {
-        return input_line.find(pattern) != std::string::npos;
+        if (input_line[0] == pattern[0]) {
 
+            return match_pattern_recursize(input_line.substr(1, input_line.length()-1), pattern.substr(1, pattern.length()-1));
+
+        }
     }
 
     return false;
