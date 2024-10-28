@@ -2,6 +2,87 @@
 #include <string>
 
 bool match_pattern_recursize(std::string input_line, std::string pattern);
+bool match_pattern(const std::string& input_line, const std::string& pattern);
+
+
+
+
+int main(int argc, char* argv[]) {
+    // Flush after every std::cout / std::cerr
+    std::cout << std::unitbuf;
+    std::cerr << std::unitbuf;
+
+    // You can use print statements as follows for debugging, they'll be visible when running tests.
+    std::cout << "Logs from your program will appear here" << std::endl;
+
+    if (argc != 3) {
+        std::cerr << "Expected two arguments" << std::endl;
+        return 1;
+    }
+
+    std::string flag = argv[1];
+    std::string pattern = argv[2];
+
+    if (flag != "-E") {
+        std::cerr << "Expected first argument to be '-E'" << std::endl;
+        return 1;
+    }
+
+
+    // Uncomment this block to pass the first stage
+    //
+    std::string input_line;
+    std::getline(std::cin, input_line);
+    //
+    try {
+    	if (match_pattern(input_line, pattern)) {
+             return 0;
+         } else {
+             return 1;
+         }
+     } catch (const std::runtime_error& e) {
+         std::cerr << e.what() << std::endl;
+         return 1;
+     }
+}
+
+bool match_pattern_recursize(std::string input_line, std::string pattern) {
+    if (pattern.empty()){
+    	return true;
+    }
+    if (pattern[0] == ' ') {
+        if (input_line[0] == ' ') {
+            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(1, pattern.length()-1));
+        }
+        return false;
+    }
+
+    if (pattern[0] == '\\' && pattern[1] == 'd') {
+        if (isdigit(input_line[0])) {
+            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(2, pattern.length()-1));
+        }
+        return false;
+    }
+
+    if (pattern[0] == '\\' && pattern[1] == 'w') {
+
+        if (isalnum(input_line[0])) {
+
+            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(2, pattern.length()-1));
+        }
+        return false;
+    }
+    else {
+        if (input_line[0] == pattern[0]) {
+
+            return match_pattern_recursize(input_line.substr(1, input_line.length()-1), pattern.substr(1, pattern.length()-1));
+
+        }
+    }
+
+    return false;
+}
+
 
 
 
@@ -49,7 +130,6 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
 	            i++;
 
 	        }
-
 	    }
     if (pattern.length() > 1 && pattern[0] == '^') {
 
@@ -59,80 +139,4 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
 	    return false;
 }
 
-
-
-int main(int argc, char* argv[]) {
-    // Flush after every std::cout / std::cerr
-    std::cout << std::unitbuf;
-    std::cerr << std::unitbuf;
-
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    std::cout << "Logs from your program will appear here" << std::endl;
-
-    if (argc != 3) {
-        std::cerr << "Expected two arguments" << std::endl;
-        return 1;
-    }
-
-    std::string flag = argv[1];
-    std::string pattern = argv[2];
-
-    if (flag != "-E") {
-        std::cerr << "Expected first argument to be '-E'" << std::endl;
-        return 1;
-    }
-
-
-    // Uncomment this block to pass the first stage
-    //
-    std::string input_line;
-    std::getline(std::cin, input_line);
-    //
-    try {
-    	if (match_pattern(input_line, pattern)) {
-             return 0;
-         } else {
-             return 1;
-         }
-     } catch (const std::runtime_error& e) {
-         std::cerr << e.what() << std::endl;
-         return 1;
-     }
-}
-
-bool match_pattern_recursize(std::string input_line, std::string pattern) {
-    if (pattern.empty())
-    	return true;
-    if (pattern[0] == ' ') {
-        if (input_line[0] == ' ') {
-            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(1, pattern.length()-1));
-        }
-        return false;
-    }
-
-    if (pattern[0] == '\\' && pattern[1] == 'd') {
-        if (isdigit(input_line[0])) {
-            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(2, pattern.length()-1));
-        }
-        return false;
-    }
-
-    if (pattern[0] == '\\' && pattern[1] == 'w') {
-
-        if (isalnum(input_line[0])) {
-
-            return match_pattern_recursize(input_line.substr(1, input_line.size()-1), pattern.substr(2, pattern.length()-1));
-        }
-        return false;
-    }
-    else {
-        if (input_line[0] == pattern[0]) {
-
-            return match_pattern_recursize(input_line.substr(1, input_line.length()-1), pattern.substr(1, pattern.length()-1));
-
-        }
-    }
-
-    return false;
-}
 
