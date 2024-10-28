@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
+
 
 bool match_pattern_recursize(std::string input_line, std::string pattern);
 bool match_pattern(const std::string& input_line, const std::string& pattern);
-
+using namespace std;
 
 
 
@@ -136,7 +138,16 @@ bool match_pattern(const std::string& input_line, const std::string& pattern) {
         return match_pattern_recursize(input_line, pattern.substr(1, pattern.length()-1));
 
     }
-	    return false;
+    string input_line_copy = input_line;
+    string pattern_copy = pattern;
+
+    if (pattern_copy.length() > 1 && pattern_copy[pattern_copy.length() - 1] == '$') {
+        reverse(input_line_copy.begin(), input_line_copy.end());
+        reverse(pattern_copy.begin(), pattern_copy.end());
+
+        return match_pattern_recursize(input_line_copy, pattern_copy.substr(1));
+    }
+    return false;
 }
 
 
